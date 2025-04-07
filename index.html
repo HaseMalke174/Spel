@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FPS Game - Sprint and Crouch</title>
+  <title>FPS Game - Mouse Lock</title>
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
@@ -19,6 +19,7 @@
     let canShoot = true, mouseMovement = { x: 0, y: 0 };
     let isSprinting = false, isCrouching = false;
     let sprintSpeed = 0.2, crouchHeight = 0.9, normalHeight = 1.6;
+    let isMouseLocked = false; // Track if the mouse is locked
 
     init();
     animate();
@@ -66,9 +67,16 @@
       document.addEventListener('mousemove', onMouseMove, false);
       document.addEventListener('mousedown', onMouseDown, false);
 
-      // Add mouse lock for first-person view
-      document.body.requestPointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock;
-      document.body.requestPointerLock();
+      // Mouse lock on click to enable first-person mode
+      document.addEventListener('click', lockMouse, false);
+    }
+
+    function lockMouse() {
+      if (!isMouseLocked) {
+        document.body.requestPointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock;
+        document.body.requestPointerLock();
+        isMouseLocked = true;
+      }
     }
 
     function onKeyDown(event) {
@@ -91,7 +99,7 @@
     }
 
     function onMouseMove(event) {
-      if (document.pointerLockElement === document.body) {
+      if (isMouseLocked) {
         // Mouse sensitivity adjustment
         const rotationSpeed = 0.002;
 
